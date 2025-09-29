@@ -241,118 +241,139 @@
         </div>
     </div>
 
-    <script>
-        class MIDMESChatbot {
-            constructor() {
-                this.messagesContainer = document.getElementById('chatMessages');
-                this.messageInput = document.getElementById('message-input');
-                this.sendButton = document.getElementById('send-button');
-                
-                this.init();
-            }
+   <script>
+    class MIDMESChatbot {
+        constructor() {
+            this.messagesContainer = document.getElementById('chatMessages');
+            this.messageInput = document.getElementById('message-input');
+            this.sendButton = document.getElementById('send-button');
+            this.baseURL = window.location.origin;
             
-            init() {
-                this.sendButton.addEventListener('click', () => this.sendMessage());
-                this.messageInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') this.sendMessage();
-                });
-            }
-            
-            async sendMessage() {
-                const message = this.messageInput.value.trim();
-                if (!message) return;
-                
-                // Add user message
-                this.addMessage(message, 'user');
-                this.messageInput.value = '';
-                
-                // Show typing indicator
-                this.showTyping();
-                
-                try {
-                    const response = await fetch('/api/chat', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            message: message
-                        })
-                    });
-                    
-                    const data = await response.json();
-                    this.hideTyping();
-                    
-                    if (data.success) {
-                        this.addMessage(data.response, 'bot');
-                    } else {
-                        this.addMessage("I'm here to help! Contact MIDMES: +251 979 029 768", 'bot');
-                    }
-                    
-                } catch (error) {
-                    this.hideTyping();
-                    this.addMessage("Contact MIDMES directly: +251 979 029 768 or email: contactmidmes@gmail.com", 'bot');
-                }
-            }
-            
-            addMessage(text, sender) {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `message ${sender}-message`;
-                
-                messageDiv.innerHTML = `
-                    <div class="message-avatar ${sender === 'user' ? 'user-avatar' : 'bot-avatar'}">
-                        ${sender === 'user' ? '👤' : '🤖'}
-                    </div>
-                    <div class="message-content">
-                        <p class="message-text">${this.escapeHtml(text)}</p>
-                        <span class="message-time">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                    </div>
-                `;
-                
-                this.messagesContainer.appendChild(messageDiv);
-                this.scrollToBottom();
-            }
-            
-            showTyping() {
-                const typingDiv = document.createElement('div');
-                typingDiv.className = 'message bot-message';
-                typingDiv.id = 'typingIndicator';
-                
-                typingDiv.innerHTML = `
-                    <div class="message-avatar bot-avatar">🤖</div>
-                    <div class="typing-indicator">
-                        <div class="typing-dot"></div>
-                        <div class="typing-dot"></div>
-                        <div class="typing-dot"></div>
-                    </div>
-                `;
-                
-                this.messagesContainer.appendChild(typingDiv);
-                this.scrollToBottom();
-            }
-            
-            hideTyping() {
-                const typingIndicator = document.getElementById('typingIndicator');
-                if (typingIndicator) {
-                    typingIndicator.remove();
-                }
-            }
-            
-            scrollToBottom() {
-                this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
-            }
-            
-            escapeHtml(text) {
-                const div = document.createElement('div');
-                div.textContent = text;
-                return div.innerHTML;
+            this.init();
+            this.testConnection();
+        }
+        
+        async testConnection() {
+            try {
+                console.log('🔍 Testing connection to:', this.baseURL);
+                const response = await fetch(this.baseURL + '/health');
+                const data = await response.json();
+                console.log('✅ Server connection:', data);
+                this.addMessage('✅ Chatbot connected successfully!', 'bot');
+            } catch (error) {
+                console.error('❌ Connection failed:', error);
+                this.addMessage('⚠️ Connection issue. Using offline mode.', 'bot');
             }
         }
         
-        // Initialize chatbot when page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            new MIDMESChatbot();
-        });
-    </script>
+        init() {
+            this.sendButton.addEventListener('click', () => this.sendMessage());
+            this.messageInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') this.sendMessage();
+            });
+            
+            this.addMessage('🔧 DEBUG MODE: Chatbot is ready! Try: "hello", "services", "contact"', 'bot');
+        }
+        
+        async sendMessage() {
+            const message = this.messageInput.value.trim();
+            if (!message) return;
+            
+            console.log('📤 Sending message:', message);
+            this.addMessage(message, 'user');
+            this.messageInput.value = '';
+            this.showTyping();
+            
+            try {
+                const response = await fetch(this.baseURL + '/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        language: 'en'
+                    })
+                });
+                
+                console.log('📨 Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('📝 Response data:', data);
+                
+                this.hideTyping();
+                
+                if (data.success) {
+                    this.addMessage(data.response, 'bot');
+                } else {
+                    this.addMessage("❌ Error: " + (data.debug || 'Unknown error'), 'bot');
+                }
+                
+            } catch (error) {
+                console.error('❌ Fetch error:', error);
+                this.hideTyping();
+                this.addMessage("🚨 Connection failed: " + error.message, 'bot');
+                this.addMessage("💡 Try: hello, services, pricing, contact", 'bot');
+            }
+        }
+        
+        addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            
+            messageDiv.innerHTML = `
+                <div class="message-avatar ${sender === 'user' ? 'user-avatar' : 'bot-avatar'}">
+                    ${sender === 'user' ? '👤' : '🤖'}
+                </div>
+                <div class="message-content">
+                    <p class="message-text">${text}</p>
+                    <span class="message-time">${new Date().toLocaleTimeString()}</span>
+                </div>
+            `;
+            
+            this.messagesContainer.appendChild(messageDiv);
+            this.scrollToBottom();
+        }
+        
+        showTyping() {
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message bot-message';
+            typingDiv.id = 'typingIndicator';
+            
+            typingDiv.innerHTML = `
+                <div class="message-avatar bot-avatar">🤖</div>
+                <div class="typing-indicator">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            `;
+            
+            this.messagesContainer.appendChild(typingDiv);
+            this.scrollToBottom();
+        }
+        
+        hideTyping() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+        
+        scrollToBottom() {
+            this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
+        }
+    }
+    
+    // Initialize chatbot when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('🚀 MIDMES Chatbot initializing...');
+        window.chatbot = new MIDMESChatbot();
+    });
+</script>
 </body>
 </html>
