@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIDMES AI Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2d1bff, #00f2ff);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .chatbot-container {
+            width: 100%;
+            max-width: 400px;
+            height: 600px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .chat-header {
+            background: #2d1bff;
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        
+        .header-info h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+        
+        .status {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .message {
+            display: flex;
+            gap: 10px;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .bot-message {
+            align-self: flex-start;
+        }
+        
+        .user-message {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+        
+        .message-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        
+        .bot-avatar {
+            background: #2d1bff;
+            color: white;
+        }
+        
+        .user-avatar {
+            background: #e9ecef;
+            color: #495057;
+        }
+        
+        .message-content {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .user-message .message-content {
+            background: #2d1bff;
+            color: white;
+        }
+        
+        .message-text {
+            margin: 0;
+            line-height: 1.4;
+        }
+        
+        .message-time {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-top: 5px;
+            display: block;
+        }
+        
+        .chat-input-container {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .input-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+        
+        #message-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        #message-input:focus {
+            border-color: #2d1bff;
+        }
+        
+        #send-button {
+            background: #2d1bff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+        
+        #send-button:hover {
+            background: #1a0dcc;
+        }
+        
+        .typing-indicator {
+            display: flex;
+            gap: 5px;
+            padding: 12px 16px;
+            background: white;
+            border-radius: 18px;
+            align-self: flex-start;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #2d1bff;
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+        
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="chatbot-container">
+        <div class="chat-header">
+            <div class="avatar">🤖</div>
+            <div class="header-info">
+                <h3>MIDMES Assistant</h3>
+                <span class="status">AI Online</span>
+            </div>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot-message">
+                <div class="message-avatar bot-avatar">🤖</div>
+                <div class="message-content">
+                    <p class="message-text">👋 Hello! I'm MIDMES AI assistant. I can help you with web design, SEO, branding, digital marketing, and more! How can I assist you today?</p>
+                    <span class="message-time">Just now</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-input-container">
+            <div class="input-wrapper">
+                <input type="text" id="message-input" placeholder="Type your message..." maxlength="500">
+                <button id="send-button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class MIDMESChatbot {
+            constructor() {
+                this.messagesContainer = document.getElementById('chatMessages');
+                this.messageInput = document.getElementById('message-input');
+                this.sendButton = document.getElementById('send-button');
+                
+                this.init();
+            }
+            
+            init() {
+                this.sendButton.addEventListener('click', () => this.sendMessage());
+                this.messageInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.sendMessage();
+                });
+            }
+            
+            async sendMessage() {
+                const message = this.messageInput.value.trim();
+                if (!message) return;
+                
+                // Add user message
+                this.addMessage(message, 'user');
+                this.messageInput.value = '';
+                
+                // Show typing indicator
+                this.showTyping();
+                
+                try {
+                    const response = await fetch('/api/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            message: message
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    this.hideTyping();
+                    
+                    if (data.success) {
+                        this.addMessage(data.response, 'bot');
+                    } else {
+                        this.addMessage("I'm here to help! Contact MIDMES: +251 979 029 768", 'bot');
+                    }
+                    
+                } catch (error) {
+                    this.hideTyping();
+                    this.addMessage("Contact MIDMES directly: +251 979 029 768 or email: contactmidmes@gmail.com", 'bot');
+                }
+            }
+            
+            addMessage(text, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${sender}-message`;
+                
+                messageDiv.innerHTML = `
+                    <div class="message-avatar ${sender === 'user' ? 'user-avatar' : 'bot-avatar'}">
+                        ${sender === 'user' ? '👤' : '🤖'}
+                    </div>
+                    <div class="message-content">
+                        <p class="message-text">${this.escapeHtml(text)}</p>
+                        <span class="message-time">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                    </div>
+                `;
+                
+                this.messagesContainer.appendChild(messageDiv);
+                this.scrollToBottom();
+            }
+            
+            showTyping() {
+                const typingDiv = document.createElement('div');
+                typingDiv.className = 'message bot-message';
+                typingDiv.id = 'typingIndicator';
+                
+                typingDiv.innerHTML = `
+                    <div class="message-avatar bot-avatar">🤖</div>
+                    <div class="typing-indicator">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                `;
+                
+                this.messagesContainer.appendChild(typingDiv);
+                this.scrollToBottom();
+            }
+            
+            hideTyping() {
+                const typingIndicator = document.getElementById('typingIndicator');
+                if (typingIndicator) {
+                    typingIndicator.remove();
+                }
+            }
+            
+            scrollToBottom() {
+                this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
+            }
+            
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+        }
+        
+        // Initialize chatbot when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new MIDMESChatbot();
+        });
+    </script>
+</body>
+</html>
