@@ -17,14 +17,14 @@ app.get('/', (req, res) => {
 app.get('/health', (req, res) => {
     res.json({ 
         status: 'OK', 
-        message: 'MIDMES Digital Marketing Chatbot',
+        message: 'MIDMES Digital Marketing Chatbot - Enhanced Mode',
         timestamp: new Date().toISOString()
     });
 });
 
 // Digital Marketing Chat Endpoint
 app.post('/api/chat', (req, res) => {
-    console.log('📱 Digital Marketing query:', req.body?.message);
+    console.log('💼 Digital Marketing query:', req.body?.message);
     
     try {
         const { message, language = 'en' } = req.body;
@@ -47,174 +47,149 @@ app.post('/api/chat', (req, res) => {
         console.error('Chat error:', error);
         res.json({
             success: true,
-            response: "I specialize in digital marketing services. Contact us: +251 979 029 768"
+            response: "I'm here to help with digital marketing! Contact us: +251 979 029 768 or email: contactmidmes@gmail.com"
         });
     }
 });
 
-// DIGITAL MARKETING FOCUSED RESPONSES
+// Enhanced Digital Marketing Responses
 function getDigitalMarketingResponse(message, language = 'en') {
     const lowerMessage = message.toLowerCase().trim();
     
     if (language === 'am') {
-        return getAmharicDigitalResponse(lowerMessage);
+        return getAmharicResponse(lowerMessage);
     }
     
-    return getEnglishDigitalResponse(lowerMessage);
+    return getEnglishResponse(lowerMessage);
 }
 
-function getEnglishDigitalResponse(message) {
-    // ===== DIGITAL MARKETING KEYWORDS =====
+function getEnglishResponse(message) {
+    // Digital Marketing Services Keywords
     const digitalMarketingKeywords = [
-        // Web Design & Development
-        'web', 'website', 'site', 'design', 'development', 'ecommerce', 'e-commerce',
-        'responsive', 'mobile', 'page', 'landing page', 'portfolio website',
-        
-        // SEO
-        'seo', 'search engine', 'google', 'ranking', 'rank', 'organic', 'traffic',
-        'keyword', 'optimization', 'backlink', 'technical seo', 'local seo',
-        
-        // Social Media
-        'social media', 'facebook', 'instagram', 'tiktok', 'twitter', 'linkedin',
-        'post', 'content', 'reels', 'story', 'follower', 'engagement',
-        
-        // Digital Advertising
-        'ad', 'ads', 'advertising', 'campaign', 'ppc', 'google ads', 'facebook ads',
-        'instagram ads', 'budget', 'conversion', 'lead', 'targeting',
-        
-        // Branding
-        'brand', 'branding', 'logo', 'identity', 'visual', 'graphic', 'design',
-        'color', 'typography', 'style guide',
-        
-        // Analytics
-        'analytics', 'report', 'data', 'metric', 'performance', 'roi', 'conversion',
-        
-        // General Digital Marketing
-        'digital', 'online', 'internet', 'marketing', 'strategy', 'campaign',
-        'content', 'video', 'photo', 'email', 'newsletter'
+        'web', 'website', 'site', 'design', 'development', 'ecommerce',
+        'seo', 'search', 'google', 'ranking', 'rank', 'organic',
+        'social media', 'facebook', 'instagram', 'tiktok', 'twitter',
+        'ad', 'ads', 'advertising', 'campaign', 'ppc', 'digital',
+        'brand', 'branding', 'logo', 'identity', 'visual',
+        'content', 'video', 'photo', 'marketing', 'strategy',
+        'price', 'cost', 'how much', 'package', 'service'
     ];
 
-    // ===== CHECK IF DIGITAL MARKETING RELATED =====
+    // Check if message is related to digital marketing
     const isDigitalMarketing = digitalMarketingKeywords.some(keyword => 
         message.includes(keyword)
     );
 
-    // ===== SERVICE-SPECIFIC RESPONSES =====
-    
-    // Web Design
+    // Web Design & Development
     if (message.includes('web') || message.includes('website') || message.includes('site') || message.includes('design')) {
         return `🌐 **Web Design & Development**
 
-We create stunning, high-converting websites that work perfectly on all devices:
+We create stunning, high-converting websites:
 
 • **Custom Website Design** - Unique designs that reflect your brand
-• **E-commerce Solutions** - Online stores with secure payment processing
-• **Responsive Design** - Perfect on desktop, tablet, and mobile
+• **E-commerce Solutions** - Online stores with secure payments
+• **Responsive Design** - Perfect on all devices
 • **Fast Loading** - Optimized for speed and performance
 • **SEO-Friendly** - Built to rank well on Google
 
 *"Your website is your digital storefront - we make it impressive!"*
 
-💬 **Ready to build your website?** Contact: +251 979 029 768`;
+💬 **Ready to build your website? Contact: +251 979 029 768**`;
     }
 
-    // SEO
+    // SEO Services
     if (message.includes('seo') || message.includes('search') || message.includes('google') || message.includes('ranking')) {
         return `🔍 **SEO Services**
 
-We help you rank higher on Google and drive organic traffic:
+We help you rank higher on Google:
 
-• **Technical SEO** - Website structure and performance optimization
-• **Content Strategy** - Keyword research and content creation
-• **Local SEO** - Dominate local search results in Ethiopia
-• **Link Building** - Authority-building backlink strategies
-• **Analytics** - Track rankings and traffic growth
+• **Technical SEO** - Website optimization
+• **Content Strategy** - Keyword research and creation
+• **Local SEO** - Dominate local search in Ethiopia
+• **Link Building** - Authority-building strategies
+• **Analytics** - Track rankings and growth
 
-*"Get found by customers who are searching for your services!"*
+*"Get found by customers searching for your services!"*
 
-📈 **Want better Google rankings?** Contact: +251 979 029 768`;
+📈 **Want better Google rankings? Contact: +251 979 029 768**`;
     }
 
     // Social Media
     if (message.includes('social') || message.includes('facebook') || message.includes('instagram') || message.includes('tiktok')) {
         return `📱 **Social Media Management**
 
-We transform your social media into a powerful marketing channel:
+We transform your social media:
 
-• **Content Creation** - Engaging posts, reels, and stories
+• **Content Creation** - Engaging posts and reels
 • **Strategy Development** - Platform-specific approaches
-• **Community Management** - Respond to comments and messages
-• **Paid Social Ads** - Targeted advertising campaigns
-• **Performance Tracking** - Measure engagement and growth
+• **Community Management** - Respond to comments
+• **Paid Social Ads** - Targeted advertising
+• **Performance Tracking** - Measure engagement
 
-*"Turn followers into customers with strategic social media!"*
+*"Turn followers into customers!"*
 
-👍 **Boost your social presence?** Contact: +251 979 029 768`;
+👍 **Boost your social presence? Contact: +251 979 029 768**`;
     }
 
     // Digital Advertising
-    if (message.includes('ad') || message.includes('campaign') || message.includes('ppc') || message.includes('targeting')) {
+    if (message.includes('ad') || message.includes('campaign') || message.includes('ppc') || message.includes('digital ad')) {
         return `📢 **Digital Advertising**
 
-Drive immediate results with targeted online advertising:
+Drive immediate results:
 
-• **Google Ads** - Appear at the top of search results
-• **Social Media Ads** - Facebook, Instagram, TikTok campaigns
-• **Retargeting** - Bring back visitors who didn't convert
-• **Conversion Tracking** - Measure ROI and optimize performance
-• **Audience Targeting** - Reach your ideal customers
+• **Google Ads** - Top of search results
+• **Social Media Ads** - Facebook, Instagram campaigns
+• **Retargeting** - Bring back visitors
+• **Conversion Tracking** - Measure ROI
+• **Audience Targeting** - Reach ideal customers
 
-*"Get instant visibility and leads with strategic advertising!"*
+*"Get instant visibility and leads!"*
 
-🎯 **Want more customers now?** Contact: +251 979 029 768`;
+🎯 **Want more customers? Contact: +251 979 029 768**`;
     }
 
     // Branding
     if (message.includes('brand') || message.includes('logo') || message.includes('identity')) {
         return `🎨 **Branding & Identity**
 
-Create a memorable brand that stands out:
+Create a memorable brand:
 
-• **Logo Design** - Unique and meaningful logos
+• **Logo Design** - Unique and meaningful
 • **Brand Guidelines** - Consistent visual identity
-• **Marketing Materials** - Business cards, brochures, banners
+• **Marketing Materials** - Business cards, brochures
 • **Brand Strategy** - Positioning and messaging
-• **Visual Identity** - Colors, fonts, and imagery
 
-*"Your brand is your promise - we help you keep it consistently!"*
+*"Your brand is your promise!"*
 
-✨ **Ready to build your brand?** Contact: +251 979 029 768`;
+✨ **Build your brand? Contact: +251 979 029 768**`;
     }
 
-    // Contact/General
+    // Contact/Price
     if (message.includes('contact') || message.includes('call') || message.includes('email') || message.includes('price') || message.includes('cost')) {
         return `📞 **Contact MIDMES Digital Marketing**
-
-Let's discuss your digital marketing needs:
 
 **Direct Contact:**
 📍 **Phone:** +251 979 029 768
 📧 **Email:** contactmidmes@gmail.com
 🌍 **Location:** Addis Ababa, Ethiopia
 
-**Our Digital Marketing Services:**
+**Our Services:**
 • Website Design & Development
 • SEO & Google Ranking
 • Social Media Management
 • Digital Advertising
 • Branding & Identity
 
-**Free Consultation:**
-We'll analyze your needs and provide a customized plan and pricing.
+**Free Consultation Available!**
 
-💼 **Ready to grow online?** Call us today!`;
+💼 **Ready to grow online? Call us today!**`;
     }
 
-    // ===== NOT DIGITAL MARKETING RELATED =====
+    // Not digital marketing related
     if (!isDigitalMarketing) {
         return `🤖 **MIDMES Digital Marketing Assistant**
 
-I specialize in helping with digital marketing services:
+I specialize in digital marketing services:
 
 🌐 **Web Design & Development**
 🔍 **SEO & Search Ranking**
@@ -230,12 +205,11 @@ Please ask me about these services, or contact us directly for other inquiries:
 How can I help with your digital marketing needs today?`;
     }
 
-    // Default digital marketing response
+    // Default response
     return `🚀 **MIDMES Digital Marketing**
 
-Thanks for your interest in our digital marketing services!
+Thanks for your interest! I specialize in:
 
-We specialize in:
 • **Website Design** - Beautiful, functional websites
 • **SEO** - Higher Google rankings
 • **Social Media** - Engaging content and growth
@@ -248,24 +222,23 @@ We specialize in:
 What specific service would you like to know more about?`;
 }
 
-function getAmharicDigitalResponse(message) {
-    // Amharic digital marketing responses
-    if (message.includes('ድር') || message.includes('website') || message.includes('web')) {
+function getAmharicResponse(message) {
+    if (message.includes('ድር') || message.includes('website')) {
         return `🌐 **ድር ጣቢያ ንድፍ እና ልማት**
 
-ከፍተኛ ውጤት የሚሰጡ የድር ጣቢያዎችን እንገነባለን፡
+ከፍተኛ ውጤት የሚሰጡ ድር ጣቢያዎችን እንገነባለን፡
 
-• **ብጁ ዲዛይን** - ንግድዎን የሚያንፀባርቅ ዲዛይን
-• **ኢ-ንግድ መፍትሄ** - ደህንነቱ የተጠበቀ የመስመር ላይ መደብር
-• **ለሁሉም መሳሪያ ተስማሚ** - በሞባይል፣ ታብሌት እና ኮምፒውተር በትክክል የሚሰራ
+• **ብጁ ዲዛይን** - ንግድዎን የሚያንፀባርቅ
+• **ኢ-ንግድ መፍትሄ** - ደህንነቱ የተጠበቀ መደብር
+• **ለሁሉም መሳሪያ ተስማሚ** - በሞባይል፣ ታብሌት እና ኮምፒውተር
 • **ፈጣን መጫን** - ለፍጥነት የተመቻቸ
 
-*"ድር ጣቢያዎ የዲጂታል መደብርዎ ነው - አስደናቂ እንዲሆን እናደርገዋለን!"*
+*"ድር ጣቢያዎ የዲጂታል መደብርዎ ነው!"*
 
-💬 **ድር ጣቢያ ለመገንባት ይጠይቁን፡** +251 979 029 768`;
+💬 **ድር ጣቢያ ለመገንባት፡ +251 979 029 768**`;
     }
 
-    if (message.includes('ሰላም') || message.includes('hello') || message.includes('hi')) {
+    if (message.includes('ሰላም') || message.includes('hello')) {
         return `👋 **ሰላም! እኔ MIDMES ዲጂታል ግብይት ረዳት ነኝ።**
 
 በዚህ ላይ ልርዳችሁ እችላለሁ፡
@@ -280,24 +253,11 @@ function getAmharicDigitalResponse(message) {
 📞 **አግኙን፡** +251 979 029 768`;
     }
 
-    if (message.includes('አገልግሎት') || message.includes('service')) {
-        return `🚀 **የMIDMES ዲጂታል ግብይት አገልግሎቶች**
+    return `🤖 **MIDMES ዲጂታል ግብይት ረዳት**
 
-🌐 **ድር ጣቢያ ንድፍ እና ልማት**
-🔍 **SEO ማመቻቸት**
-📱 **ማህበራዊ ሚዲያ አስተዳደር**
-📢 **ዲጂታል ማስታወቂያ**
-🎨 **ብሬንዲንግ እና ምስል**
+እኔ ለዲጂታል ግብይት አገልግሎቶች ብቻ እረዳለሁ፡
 
-የትኛው አገልግሎት ያስተውሎታል?`;
-    }
-
-    // Not digital marketing related in Amharic
-    return `🤖 **MIDMES ዲጂታል Marketing ረዳት**
-
-እኔ ለዲጂታል Marketing አገልግሎቶች ብቻ እረዳቹሃልው፡
-
-🌐 **web devleopment**
+🌐 **ድር ጣቢያ ንድፍ**
 🔍 **SEO እና በጉግል ላይ መድረስ**
 📱 **ማህበራዊ ሚዲያ**
 📢 **ዲጂታል ማስታወቂያ**
@@ -308,7 +268,7 @@ function getAmharicDigitalResponse(message) {
 📞 **ስልክ፡** +251 979 029 768
 📧 **ኢሜይል፡** contactmidmes@gmail.com
 
-በዲጂታል ግብይት አገልግሎቶቻችን ላይ ምን ልረዳችሁ እችላለሁ!`;
+በዲጂታል ግብይት አገልግሎቶቻችን ላይ ልርዳችሁ እችላለሁ!`;
 }
 
 // Start server
